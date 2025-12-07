@@ -1,8 +1,6 @@
 # Bad_Debt_Prediction
 
-Here is a **clean, concise version** of ONLY the **Problem Statement** and **Objectives** for your Bad Debt Prediction Project:
-
----
+----
 
 ## **Problem Statement**
 
