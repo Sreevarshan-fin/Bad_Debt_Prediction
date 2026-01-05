@@ -217,6 +217,5 @@ if st.button("Predict Risk"):
     st.subheader("Interpretation to Review the Result")
 
     st.markdown(f"""
-    **Probability of Default (PD):** `{prob_bad:.2%}`  
     **Credit Score Risk Band:** `{band}`  
     """)
