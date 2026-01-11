@@ -66,7 +66,7 @@ def delinquency_interpretation(long_term_delinquency):
         return "Low Risk", "Clean repayment behaviour"
 
 # ==================================================
-# 🏠 HOME — ABOUT (NO INPUTS)
+# 🏠 HOME — ABOUT ONLY
 # ==================================================
 if page == "🏠 Home":
 
@@ -85,48 +85,102 @@ if page == "🏠 Home":
     This application simulates a **real-world credit risk decision system**
     used by banks and financial institutions to identify **bad debt risk**.
 
-    The system combines:
-    - Credit bureau features
-    - Derived delinquency metrics
-    - Machine learning probability models
-    - Business Rule Engine (BRE)
+    **Key Components**
+    - Credit bureau behaviour metrics
+    - Long-term delinquency feature engineering
+    - Machine learning default probability
+    - Business Rule Engine (BRE) overrides
 
     ### About Me
     **Sree Varshan**  
     Aspiring Data Scientist & Credit Risk Analyst  
-    Focused on **ML-driven financial risk systems** with explainability.
+    Specialized in **ML-driven credit risk systems**
     """)
 
 # ==================================================
-# 🧮 CALCULATIONS — INPUTS + PREDICTION
+# 🧮 CALCULATIONS — ALL INPUTS + PREDICTION
 # ==================================================
 elif page == "🧮 Calculations":
 
-    st.markdown("## Credit Behaviour Inputs")
+    st.info("All inputs follow credit bureau and internal scorecard logic.")
 
-    col1, col2, col3 = st.columns(3)
+    # ---------------- CREDIT BEHAVIOUR ----------------
+    st.markdown("## Credit Behaviour Metrics")
 
-    with col1:
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
         SCORE_CR22 = st.number_input("Credit Score (0–1200)", -300, 1200, 650)
         DEROGATORIES = st.number_input("Derogatory Records", 0, value=0)
-        Late_12M = st.number_input("Late Payments (30+ DPD) – 12M", 0, value=0)
+        Late_12M = st.number_input("Late Payments (30+ DPD) – Last 12 Months", 0, value=0)
 
-    with col2:
+    with c2:
         CC_Failures = st.number_input("Credit Card Payment Failures", 0, value=0)
         Recent_Irregularity = st.number_input("Recent Payment Irregularity (Months)", 0, 25, 0)
-        Late_24M = st.number_input("Late Payments (30+ DPD) – 24M", 0, value=0)
+        Late_24M = st.number_input("Late Payments (30+ DPD) – Last 24 Months", 0, value=0)
 
-    with col3:
+    with c3:
         Active_CC = st.number_input("Active Credit Cards", 0, value=1)
         Total_Defaults = st.number_input("Total Historical Defaults", 0, value=0)
         Open_Defaults = st.number_input("Open Defaults", 0, value=0)
 
-    # Derived Metric
+    # ---------------- DERIVED FEATURE ----------------
     LTD = long_term_delinquency_count(Late_12M, Late_24M)
 
     st.metric("Long-Term / Repeated Delinquency Count", LTD)
 
-    # Prediction
+    # ---------------- APPLICANT PROFILE ----------------
+    st.markdown("## Applicant Profile")
+
+    a1, a2, a3 = st.columns(3)
+
+    with a1:
+        RESIDENTIAL = st.selectbox(
+            "Residential Status",
+            ["Owned", "Rented", "Living_With_Family", "Missing"]
+        )
+        CD_OCCUPATION = st.selectbox(
+            "Occupation Type",
+            ["employed", "self_employed", "student", "retired", "unemployed", "Missing"]
+        )
+
+    with a2:
+        EMPLOYED_STATUS = st.selectbox(
+            "Employment Status",
+            ["employed", "self_employed", "student", "retired", "unemployed", "benefits", "Missing"]
+        )
+        APPLICANT_AGE = st.selectbox(
+            "Applicant Age Band",
+            ["18-24", "25-29", "30-34", "35-44", "45-54", "54+"]
+        )
+
+    with a3:
+        DOC_TYPE = st.selectbox(
+            "Document Type",
+            [
+                "AU Passport", "AU Driver Licence", "Australian Passport",
+                "Intl Passport and Visa", "HAAU 18+ Card", "Missing"
+            ]
+        )
+        BUREAU_DEFAULT = st.selectbox(
+            "Bureau Default Category",
+            ["Missing", "1-1000", "1000+"]
+        )
+
+    # ---------------- INTERNAL SEGMENTATION ----------------
+    st.markdown("## Internal Risk Segmentation")
+
+    SCORECARD = st.selectbox(
+        "Internal Scorecard",
+        ["TAR1A", "SFJR1A", "HSHSOL", "CTSDP", "INSLV"]
+    )
+
+    BUREAU_ENQUIRIES_12M = st.selectbox(
+        "Bureau Enquiries (Last 12 Months)",
+        ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"]
+    )
+
+    # ---------------- PREDICTION ----------------
     st.markdown("---")
     if st.button("Predict Credit Risk", use_container_width=True):
 
@@ -140,7 +194,15 @@ elif page == "🧮 Calculations":
             "Recent_Payment_Irregularity_Flag": Recent_Irregularity,
             "CREDIT_CARD_CR22": Active_CC,
             "DEFAULT_CNT_CR22": Total_Defaults,
-            "DEFAULT_OPEN_CNT_CR22": Open_Defaults
+            "DEFAULT_OPEN_CNT_CR22": Open_Defaults,
+            "RESIDENTIAL": RESIDENTIAL,
+            "CD_OCCUPATION": CD_OCCUPATION,
+            "EMPLOYED_STATUS": EMPLOYED_STATUS,
+            "APPLICANT_AGE": APPLICANT_AGE,
+            "DOC_TYPE": DOC_TYPE,
+            "BUREAU_DEFAULT": BUREAU_DEFAULT,
+            "SCORECARD": SCORECARD,
+            "BUREAU_ENQUIRIES_12_MONTHS": BUREAU_ENQUIRIES_12M
         }
 
         prob_bad, decision = predict_risk(user_input)
@@ -149,8 +211,8 @@ elif page == "🧮 Calculations":
 
         st.markdown("## Prediction Result")
 
-        st.write(f"**ML Decision:** {decision}")
-        st.write(f"**Credit Score Band:** {band}")
+        st.success(f"ML Decision: {decision}")
+        st.write(f"**Credit Score Risk Band:** {band}")
         st.write(f"**Probability of Default:** {prob_bad:.2%}")
 
         st.markdown("### Rule-Based Interpretation")
@@ -167,10 +229,10 @@ elif page == "⚙️ Business Rule Engine":
     st.markdown("""
     ### Delinquency Rules
     ```text
-    Long-Term Delinquency ≥ 5  → Reject
-    Long-Term Delinquency 3–4  → High Risk
-    Long-Term Delinquency 1–2  → Medium Risk
-    Long-Term Delinquency = 0  → Low Risk
+    ≥ 5  → Reject
+    3–4 → High Risk
+    1–2 → Medium Risk
+    0   → Low Risk
     ```
     """)
 
@@ -185,9 +247,9 @@ elif page == "⚙️ Business Rule Engine":
     """)
 
     st.markdown("""
-    ### Why BRE Exists
-    - Overrides extreme ML predictions
-    - Improves recall for bad debt
-    - Ensures regulatory explainability
-    - Aligns decisions with credit policy
+    ### Purpose of BRE
+    - Overrides risky ML approvals
+    - Improves bad-debt recall
+    - Ensures explainability
+    - Aligns with lending policy
     """)
