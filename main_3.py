@@ -1,188 +1,191 @@
 import streamlit as st
 from prediction_helper import predict_risk
 
-st.set_page_config(page_title="Bad Debt Prediction", layout="wide")
-st.title("Bad Debt Prediction")
+# --------------------------------------------------
+# Page Configuration
+# --------------------------------------------------
+st.set_page_config(
+    page_title="Bad Debt Prediction",
+    page_icon="📊",
+    layout="wide"
+)
 
+# --------------------------------------------------
+# Header
+# --------------------------------------------------
 st.markdown(
-"""
-ℹ️ **Note:**  
-All inputs follow **credit bureau risk-score logic**.  
-Some combinations may be technically valid but **logically inconsistent** in real-world credit systems.
-"""
+    """
+    <h1 style="text-align:center;">📊 Bad Debt Risk Prediction</h1>
+    <p style="text-align:center; color:grey;">
+    Credit Bureau–Driven Risk Assessment Dashboard
+    </p>
+    """,
+    unsafe_allow_html=True
 )
 
-# -----------------------------
-# NUMERIC INPUTS
-# -----------------------------
-SCORE_CR22 = st.number_input(
-    "Credit Score (0 – 1200)",
-    min_value=-300,
-    max_value=1200,
-    value=650,
-    help="""
-Represents bureau risk score.
-• Higher score = lower credit risk  
-• <300 = very high risk  
-• 650+ = good  
-• 900+ = excellent
-"""
+st.info(
+    "All inputs follow **credit bureau risk-score logic**. "
+    "Some combinations may be technically valid but **logically inconsistent** in real-world credit systems."
 )
 
-DEROGATORIES = st.number_input(
-    "Derogatory Records",
-    min_value=0,
-    value=0,
-    help="""
-Count of severe negative credit events.
-Examples:
-• Charge-offs
-• Bankruptcy
-• Legal defaults
+# --------------------------------------------------
+# INPUT SECTIONS
+# --------------------------------------------------
+st.markdown("### 🔢 Credit Behaviour Metrics")
 
-Higher value = higher risk
-"""
-)
+col1, col2, col3 = st.columns(3)
 
-Late_Payment_30DPD_Last_12M = st.number_input(
-    "Late Payments (30+ DPD) – Last 12 Months",
-    min_value=0,
-    value=0,
-    help="Number of payments overdue by 30+ days in last 12 months."
-)
+with col1:
+    SCORE_CR22 = st.number_input(
+        "Credit Score (0 – 1200)",
+        min_value=-300,
+        max_value=1200,
+        value=650
+    )
 
-Credit_Card_Payment_Failure_Count = st.number_input(
-    "Credit Card Payment Failures",
-    min_value=0,
-    value=0,
-    help="Number of missed or failed credit card payments."
-)
+    DEROGATORIES = st.number_input(
+        "Derogatory Records",
+        min_value=0,
+        value=0
+    )
 
-Recent_Payment_Irregularity_Flag = st.number_input(
-    "Recent Payment Irregularity Flag",
-    min_value=0,
-    max_value=25,
-    value=0,
-    help="""
-Number of recent periods (months) where payment behavior was irregular.   
+    Late_Payment_30DPD_Last_12M = st.number_input(
+        "Late Payments (30+ DPD) – Last 12 Months",
+        min_value=0,
+        value=0
+    )
 
-• 0 = No irregular payments
-• Higher value = frequent payment issues
-• 10+ = very risky behavior
-"""
-)
+with col2:
+    Credit_Card_Payment_Failure_Count = st.number_input(
+        "Credit Card Payment Failures",
+        min_value=0,
+        value=0
+    )
 
-Late_Payment_30DPD_Last_24M = st.number_input(
-    "Late Payments (30+ DPD) – Last 24 Months",
-    min_value=0,
-    value=0,
-    help="Total late payments in last 24 months."
-)
+    Recent_Payment_Irregularity_Flag = st.number_input(
+        "Recent Payment Irregularity (Months)",
+        min_value=0,
+        max_value=25,
+        value=0
+    )
 
-Long_Term_Payment_Delinquency_Count = st.number_input(
-    "Long-Term Delinquencies",
-    min_value=0,
-    value=0,
-    help="Count of long-standing unresolved delinquencies."
-)
+    Late_Payment_30DPD_Last_24M = st.number_input(
+        "Late Payments (30+ DPD) – Last 24 Months",
+        min_value=0,
+        value=0
+    )
 
-CREDIT_CARD_CR22 = st.number_input(
-    "Number of Active Credit Cards",
-    min_value=0,
-    value=1,
-    help="Total number of active credit cards."
-)
+with col3:
+    Long_Term_Payment_Delinquency_Count = st.number_input(
+        "Long-Term Delinquencies",
+        min_value=0,
+        value=0
+    )
 
-DEFAULT_CNT_CR22 = st.number_input(
-    "Number of Total Defaults",
-    min_value=0,
-    value=0,
-    help="Total number of historical defaults. Not Amount how many defaults [Count] example : 1,2,3,...n"
-)
+    CREDIT_CARD_CR22 = st.number_input(
+        "Active Credit Cards",
+        min_value=0,
+        value=1
+    )
 
-DEFAULT_OPEN_CNT_CR22 = st.number_input(
-    "Open Defaults",
-    min_value=0,
-    value=0,
-    help="Number of defaults that are still unresolved."
-)
+    DEFAULT_CNT_CR22 = st.number_input(
+        "Total Historical Defaults",
+        min_value=0,
+        value=0
+    )
 
-# -----------------------------
+    DEFAULT_OPEN_CNT_CR22 = st.number_input(
+        "Open Defaults",
+        min_value=0,
+        value=0
+    )
+
+# --------------------------------------------------
 # CATEGORICAL INPUTS
-# -----------------------------
-RESIDENTIAL = st.selectbox(
-    "Residential Status",
-    ["Owned", "Rented", "Living_With_Family", "Missing"],
-    help="Applicant’s current housing status."
-)
+# --------------------------------------------------
+st.markdown("### 🧾 Applicant Profile")
 
-CD_OCCUPATION = st.selectbox(
-    "Occupation Type",
-    ["employed", "self_employed", "student", "retired", "unemployed", "Missing"],
-    help="Primary occupation of the applicant."
-)
+col4, col5, col6 = st.columns(3)
 
-DOC_TYPE = st.selectbox(
-    "Document Type",
-    [
-        "AU Passport", "AU Driver Licence", "Australian Passport",
-        "Intl Passport and Visa", "HAAU 18+ Card", "Fire Arms Licence",
-        "Defence Force ID(picture card)", "AU Birth Certificate", "Missing"
-    ],
-    help="Identity document provided by applicant."
-)
+with col4:
+    RESIDENTIAL = st.selectbox(
+        "Residential Status",
+        ["Owned", "Rented", "Living_With_Family", "Missing"]
+    )
 
-EMPLOYED_STATUS = st.selectbox(
-    "Employment Status",
-    ["employed", "self_employed", "student", "retired", "unemployed", "benefits", "Missing"],
-    help="Current employment status."
-)
+    CD_OCCUPATION = st.selectbox(
+        "Occupation Type",
+        ["employed", "self_employed", "student", "retired", "unemployed", "Missing"]
+    )
 
-APPLICANT_AGE = st.selectbox(
-    "Applicant Age Band",
-    ["18-24", "25 - 29", "30-34", "35-44", "45-54", "54+"],
-    help="Age group of applicant."
-)
+with col5:
+    EMPLOYED_STATUS = st.selectbox(
+        "Employment Status",
+        ["employed", "self_employed", "student", "retired", "unemployed", "benefits", "Missing"]
+    )
 
-BUREAU_DEFAULT = st.selectbox(
-    "Bureau Default Category",
-    ["Missing", "1-1000", "1000+"],
-    help="""
-Indicates severity of bureau-recorded defaults.
-• 1000+ = very high default exposure
-"""
-)
+    APPLICANT_AGE = st.selectbox(
+        "Applicant Age Band",
+        ["18-24", "25 - 29", "30-34", "35-44", "45-54", "54+"]
+    )
 
-SCORECARD = st.selectbox(
-    "Internal Scorecard",
-    ["TAR1A", "SFJR1A", "HSHSOL", "CTSDP", "INSLV"],
-    help="Internal lender scorecard segment."
-)
+with col6:
+    DOC_TYPE = st.selectbox(
+        "Document Type",
+        [
+            "AU Passport", "AU Driver Licence", "Australian Passport",
+            "Intl Passport and Visa", "HAAU 18+ Card", "Fire Arms Licence",
+            "Defence Force ID(picture card)", "AU Birth Certificate", "Missing"
+        ]
+    )
 
-BUREAU_ENQUIRIES_12_MONTHS = st.selectbox(
-    "Bureau Enquiries (Last 12 Months)",
-    ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"],
-    help="Number of credit enquiries in last 12 months."
-)
+    BUREAU_DEFAULT = st.selectbox(
+        "Bureau Default Category",
+        ["Missing", "1-1000", "1000+"]
+    )
 
+# --------------------------------------------------
+# MODEL SEGMENTATION
+# --------------------------------------------------
+st.markdown("### 🧠 Internal Risk Segmentation")
 
+col7, col8 = st.columns(2)
 
+with col7:
+    SCORECARD = st.selectbox(
+        "Internal Scorecard",
+        ["TAR1A", "SFJR1A", "HSHSOL", "CTSDP", "INSLV"]
+    )
+
+with col8:
+    BUREAU_ENQUIRIES_12_MONTHS = st.selectbox(
+        "Bureau Enquiries (Last 12 Months)",
+        ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"]
+    )
+
+# --------------------------------------------------
+# RISK BAND LOGIC
+# --------------------------------------------------
 def cr22_risk_band(score):
     if score <= 500:
         return "Very High Risk"
-    elif 501 <= score <= 607:
+    elif score <= 607:
         return "High Risk"
-    elif 608 <= score <= 715:
+    elif score <= 715:
         return "Medium Risk"
     else:
         return "Low Risk"
 
+# --------------------------------------------------
+# PREDICTION
+# --------------------------------------------------
+st.markdown("---")
+center_col = st.columns([1, 2, 1])[1]
 
-# -----------------------------
-# BUTTON
-# -----------------------------
-if st.button("Predict Risk"):
+with center_col:
+    predict_btn = st.button("🔍 Predict Credit Risk", use_container_width=True)
 
+if predict_btn:
     user_input = {
         "SCORE_CR22": SCORE_CR22,
         "DEROGATORIES": DEROGATORIES,
@@ -205,17 +208,19 @@ if st.button("Predict Risk"):
     }
 
     prob_bad, decision = predict_risk(user_input)
-    result = predict_risk(user_input)
-
-    st.subheader("Prediction Result")
-    st.success(f"Final Decision: {decision}")
-
-
-    # CR22 interpretation
     band = cr22_risk_band(SCORE_CR22)
 
-    st.subheader("Interpretation to Review the Result")
+    st.markdown("## 📌 Prediction Outcome")
 
-    st.markdown(f"""
-    **Credit Score Risk Band:** `{band}`  
-    """)
+    if decision.lower() == "bad":
+        st.error(f"❌ **Final Decision:** {decision}")
+    else:
+        st.success(f"✅ **Final Decision:** {decision}")
+
+    st.markdown(
+        f"""
+        **Credit Score Risk Band:** `{band}`  
+        **Probability of Default:** `{prob_bad:.2%}`
+        """
+    )
+
