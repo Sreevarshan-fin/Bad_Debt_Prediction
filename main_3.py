@@ -15,7 +15,7 @@ st.set_page_config(
 # --------------------------------------------------
 st.markdown(
     """
-    <h1 style="text-align:center;">📊 Bad Debt Risk Prediction</h1>
+    <h1 style="text-align:center;">Bad Debt Risk Prediction</h1>
     <p style="text-align:center; color:grey;">
     Credit Bureau–Driven Risk Assessment Dashboard
     </p>
@@ -24,14 +24,66 @@ st.markdown(
 )
 
 st.info(
-    "All inputs follow **credit bureau risk-score logic**. "
-    "Some combinations may be technically valid but **logically inconsistent** in real-world credit systems."
+    "All inputs follow credit bureau risk-score logic. "
+    "Some combinations may be technically valid but logically inconsistent in real-world credit systems."
 )
+
+# --------------------------------------------------
+# Meaning Functions
+# --------------------------------------------------
+def credit_score_meaning(score):
+    if score < 300:
+        return "Extremely high risk. Credit is typically declined."
+    elif score < 500:
+        return "Very high risk. Strong indicators of default."
+    elif score < 650:
+        return "Medium risk. Requires careful underwriting."
+    elif score < 900:
+        return "Low risk. Acceptable credit behaviour."
+    else:
+        return "Excellent profile. Very low probability of default."
+
+
+def derogatories_meaning(val):
+    if val == 0:
+        return "No severe negative credit events recorded."
+    elif val <= 2:
+        return "Limited negative credit history present."
+    else:
+        return "Multiple serious credit events recorded."
+
+
+def late_payment_12m_meaning(val):
+    if val == 0:
+        return "No late payments in the last 12 months."
+    elif val <= 2:
+        return "Occasional payment delays observed."
+    else:
+        return "Frequent recent delinquencies detected."
+
+
+def irregularity_meaning(val):
+    if val == 0:
+        return "Consistent repayment behaviour."
+    elif val <= 5:
+        return "Occasional repayment irregularities."
+    elif val <= 10:
+        return "Repeated irregular repayment behaviour."
+    else:
+        return "Chronic payment instability observed."
+
+
+def open_defaults_meaning(val):
+    if val == 0:
+        return "No unresolved defaults."
+    else:
+        return "Active unresolved defaults indicate high credit risk."
+
 
 # --------------------------------------------------
 # INPUT SECTIONS
 # --------------------------------------------------
-st.markdown("### 🔢 Credit Behaviour Metrics")
+st.markdown("### Credit Behaviour Metrics")
 
 col1, col2, col3 = st.columns(3)
 
@@ -42,18 +94,21 @@ with col1:
         max_value=1200,
         value=650
     )
+    st.caption(credit_score_meaning(SCORE_CR22))
 
     DEROGATORIES = st.number_input(
         "Derogatory Records",
         min_value=0,
         value=0
     )
+    st.caption(derogatories_meaning(DEROGATORIES))
 
     Late_Payment_30DPD_Last_12M = st.number_input(
         "Late Payments (30+ DPD) – Last 12 Months",
         min_value=0,
         value=0
     )
+    st.caption(late_payment_12m_meaning(Late_Payment_30DPD_Last_12M))
 
 with col2:
     Credit_Card_Payment_Failure_Count = st.number_input(
@@ -68,6 +123,7 @@ with col2:
         max_value=25,
         value=0
     )
+    st.caption(irregularity_meaning(Recent_Payment_Irregularity_Flag))
 
     Late_Payment_30DPD_Last_24M = st.number_input(
         "Late Payments (30+ DPD) – Last 24 Months",
@@ -99,11 +155,12 @@ with col3:
         min_value=0,
         value=0
     )
+    st.caption(open_defaults_meaning(DEFAULT_OPEN_CNT_CR22))
 
 # --------------------------------------------------
-# CATEGORICAL INPUTS
+# APPLICANT PROFILE
 # --------------------------------------------------
-st.markdown("### 🧾 Applicant Profile")
+st.markdown("### Applicant Profile")
 
 col4, col5, col6 = st.columns(3)
 
@@ -112,6 +169,13 @@ with col4:
         "Residential Status",
         ["Owned", "Rented", "Living_With_Family", "Missing"]
     )
+    residential_meaning = {
+        "Owned": "Stable residence. Lower credit risk.",
+        "Rented": "Moderate residential stability.",
+        "Living_With_Family": "Possible financial dependence.",
+        "Missing": "Missing information increases uncertainty."
+    }
+    st.caption(residential_meaning[RESIDENTIAL])
 
     CD_OCCUPATION = st.selectbox(
         "Occupation Type",
@@ -147,7 +211,7 @@ with col6:
 # --------------------------------------------------
 # MODEL SEGMENTATION
 # --------------------------------------------------
-st.markdown("### 🧠 Internal Risk Segmentation")
+st.markdown("### Internal Risk Segmentation")
 
 col7, col8 = st.columns(2)
 
@@ -162,6 +226,17 @@ with col8:
         "Bureau Enquiries (Last 12 Months)",
         ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"]
     )
+
+    enquiry_meaning = {
+        "1-2": "Normal enquiry behaviour.",
+        "3": "Slight increase in credit demand.",
+        "4-5": "Elevated credit-seeking behaviour.",
+        "6-7": "High enquiry frequency.",
+        "8-11": "Aggressive credit shopping behaviour.",
+        "12+": "Severe credit stress indicator.",
+        "14+": "Extreme credit risk indicator."
+    }
+    st.caption(enquiry_meaning[BUREAU_ENQUIRIES_12_MONTHS])
 
 # --------------------------------------------------
 # RISK BAND LOGIC
@@ -183,7 +258,7 @@ st.markdown("---")
 center_col = st.columns([1, 2, 1])[1]
 
 with center_col:
-    predict_btn = st.button("🔍 Predict Credit Risk", use_container_width=True)
+    predict_btn = st.button("Predict Credit Risk", use_container_width=True)
 
 if predict_btn:
     user_input = {
@@ -210,17 +285,18 @@ if predict_btn:
     prob_bad, decision = predict_risk(user_input)
     band = cr22_risk_band(SCORE_CR22)
 
-    st.markdown("## 📌 Prediction Outcome")
+    st.markdown("## Prediction Outcome")
 
     if decision.lower() == "bad":
-        st.error(f"❌ **Final Decision:** {decision}")
+        st.error(f"Final Decision: {decision}")
     else:
-        st.success(f"✅ **Final Decision:** {decision}")
+        st.success(f"Final Decision: {decision}")
 
     st.markdown(
         f"""
-        **Credit Score Risk Band:** `{band}`  
-        **Probability of Default:** `{prob_bad:.2%}`
+        Credit Score Risk Band: **{band}**  
+        Probability of Default: **{prob_bad:.2%}**
         """
     )
+
 
