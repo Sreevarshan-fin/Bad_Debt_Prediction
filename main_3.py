@@ -11,6 +11,25 @@ st.set_page_config(
 )
 
 # --------------------------------------------------
+# STYLE OVERRIDES (PROFESSIONAL METRIC SIZE)
+# --------------------------------------------------
+st.markdown(
+    """
+    <style>
+    div[data-testid="stMetricValue"] {
+        font-size: 28px !important;
+        font-weight: 600;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 14px;
+        color: #555555;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --------------------------------------------------
 # Header
 # --------------------------------------------------
 st.markdown(
@@ -32,9 +51,6 @@ st.info(
 # BUSINESS LOGIC (MATCHES ML PIPELINE)
 # --------------------------------------------------
 def long_term_delinquency_count(dpd_12m: int, dpd_24m: int) -> int:
-    """
-    Long-term or repeated delinquency calculation
-    """
     return dpd_24m + max(0, dpd_12m - 1)
 
 # --------------------------------------------------
@@ -46,51 +62,46 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     SCORE_CR22 = st.number_input(
-        "Credit Score (0 – 1200)", min_value=-300, max_value=1200, value=650
+        "Credit Score (0 – 1200)", -300, 1200, 650
     )
-
     DEROGATORIES = st.number_input(
-        "Derogatory Records", min_value=0, value=0
+        "Derogatory Records", 0, value=0
     )
-
     Late_Payment_30DPD_Last_12M = st.number_input(
-        "Late Payments (30+ DPD) – Last 12 Months", min_value=0, value=0
+        "Late Payments (30+ DPD) – Last 12 Months", 0, value=0
     )
 
 with col2:
     Credit_Card_Payment_Failure_Count = st.number_input(
-        "Credit Card Payment Failures", min_value=0, value=0
+        "Credit Card Payment Failures", 0, value=0
     )
-
     Recent_Payment_Irregularity_Flag = st.number_input(
-        "Recent Payment Irregularity (Months)", min_value=0, max_value=25, value=0
+        "Recent Payment Irregularity (Months)", 0, 25, 0
     )
-
     Late_Payment_30DPD_Last_24M = st.number_input(
-        "Late Payments (30+ DPD) – Last 24 Months", min_value=0, value=0
+        "Late Payments (30+ DPD) – Last 24 Months", 0, value=0
     )
 
 with col3:
     CREDIT_CARD_CR22 = st.number_input(
-        "Active Credit Cards", min_value=0, value=1
+        "Active Credit Cards", 0, value=1
     )
-
     DEFAULT_CNT_CR22 = st.number_input(
-        "Total Historical Defaults", min_value=0, value=0
+        "Total Historical Defaults", 0, value=0
     )
-
     DEFAULT_OPEN_CNT_CR22 = st.number_input(
-        "Open Defaults", min_value=0, value=0
+        "Open Defaults", 0, value=0
     )
 
 # --------------------------------------------------
-# AUTO-DERIVED FEATURE (CLEAR DISPLAY)
+# AUTO-DERIVED FEATURE (CLEAR + READABLE)
 # --------------------------------------------------
 Long_Term_Payment_Delinquency_Count = long_term_delinquency_count(
     Late_Payment_30DPD_Last_12M,
     Late_Payment_30DPD_Last_24M
 )
 
+st.markdown("#### Derived Credit Metric")
 
 st.metric(
     label="Long-Term / Repeated Delinquency Count (Auto-calculated)",
@@ -109,7 +120,6 @@ with col4:
         "Residential Status",
         ["Owned", "Rented", "Living_With_Family", "Missing"]
     )
-
     CD_OCCUPATION = st.selectbox(
         "Occupation Type",
         ["employed", "self_employed", "student", "retired", "unemployed", "Missing"]
@@ -121,7 +131,6 @@ with col5:
         ["employed", "self_employed", "student", "retired",
          "unemployed", "benefits", "Missing"]
     )
-
     APPLICANT_AGE = st.selectbox(
         "Applicant Age Band",
         ["18-24", "25 - 29", "30-34", "35-44", "45-54", "54+"]
@@ -137,7 +146,6 @@ with col6:
             "AU Birth Certificate", "Missing"
         ]
     )
-
     BUREAU_DEFAULT = st.selectbox(
         "Bureau Default Category",
         ["Missing", "1-1000", "1000+"]
