@@ -91,7 +91,6 @@ Long_Term_Payment_Delinquency_Count = long_term_delinquency_count(
     Late_Payment_30DPD_Last_24M
 )
 
-st.markdown("#### Derived Credit Metric")
 
 st.metric(
     label="Long-Term / Repeated Delinquency Count (Auto-calculated)",
