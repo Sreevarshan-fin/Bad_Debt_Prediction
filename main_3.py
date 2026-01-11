@@ -1,3 +1,4 @@
+
 import streamlit as st
 from prediction_helper import predict_risk
 
@@ -25,8 +26,17 @@ st.markdown(
 
 st.info(
     "All inputs follow credit bureau risk-score logic. "
-    "Some combinations may be technically valid but logically inconsistent in real-world credit systems."
+    "Derived features are computed automatically to match the ML pipeline."
 )
+
+# --------------------------------------------------
+# BUSINESS LOGIC (MATCHES ML PIPELINE)
+# --------------------------------------------------
+def long_term_delinquency_count(dpd_12m: int, dpd_24m: int) -> int:
+    """
+    Calculate Count of Long-Term or Repeated Delinquency Behavior
+    """
+    return dpd_24m + max(0, dpd_12m - 1)
 
 # --------------------------------------------------
 # INPUTS
@@ -54,12 +64,17 @@ with col2:
     )
 
 with col3:
-    Long_Term_Payment_Delinquency_Count = st.number_input(
-        "Long-Term Delinquencies", 0, value=0
-    )
     CREDIT_CARD_CR22 = st.number_input("Active Credit Cards", 0, value=1)
     DEFAULT_CNT_CR22 = st.number_input("Total Historical Defaults", 0, value=0)
     DEFAULT_OPEN_CNT_CR22 = st.number_input("Open Defaults", 0, value=0)
+
+# --------------------------------------------------
+# DERIVED FEATURE (AUTO-CALCULATED)
+# --------------------------------------------------
+Long_Term_Payment_Delinquency_Count = long_term_delinquency_count(
+    Late_Payment_30DPD_Last_12M,
+    Late_Payment_30DPD_Last_24M
+)
 
 # --------------------------------------------------
 # APPLICANT PROFILE
@@ -146,9 +161,9 @@ if predict_btn:
         "SCORE_CR22": SCORE_CR22,
         "DEROGATORIES": DEROGATORIES,
         "Late_Payment_30DPD_Last_12M": Late_Payment_30DPD_Last_12M,
+        "Late_Payment_30DPD_Last_24M": Late_Payment_30DPD_Last_24M,
         "Credit_Card_Payment_Failure_Count": Credit_Card_Payment_Failure_Count,
         "Recent_Payment_Irregularity_Flag": Recent_Payment_Irregularity_Flag,
-        "Late_Payment_30DPD_Last_24M": Late_Payment_30DPD_Last_24M,
         "Long_Term_Payment_Delinquency_Count": Long_Term_Payment_Delinquency_Count,
         "CREDIT_CARD_CR22": CREDIT_CARD_CR22,
         "DEFAULT_CNT_CR22": DEFAULT_CNT_CR22,
