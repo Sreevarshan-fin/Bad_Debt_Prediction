@@ -55,6 +55,16 @@ def cr22_risk_band(score):
     else:
         return "Low Risk"
 
+def delinquency_interpretation(long_term_delinquency):
+    if long_term_delinquency >= 5:
+        return "Reject", "Very High Risk due to chronic delinquency"
+    elif long_term_delinquency >= 3:
+        return "High Risk", "Repeated delinquency behaviour detected"
+    elif long_term_delinquency >= 1:
+        return "Medium Risk", "Occasional delinquency observed"
+    else:
+        return "Low Risk", "Clean repayment behaviour"
+
 # ==================================================
 # 🏠 HOME
 # ==================================================
@@ -63,7 +73,7 @@ if page == "🏠 Home":
         """
         <h1 style="text-align:center;">Bad Debt Prediction</h1>
         <p style="text-align:center; color:grey;">
-        A Business-Oriented Machine Learning Credit Risk System
+        Machine Learning + Business Rule Engine Credit System
         </p>
         """,
         unsafe_allow_html=True
@@ -72,16 +82,13 @@ if page == "🏠 Home":
     st.markdown("""
     ### About the Project
     This application predicts **Bad Debt Risk** using **credit bureau data**
-    combined with a **Machine Learning + Business Rule Engine (BRE)** approach.
+    combined with a **Business Rule Engine (BRE)** for explainable decisions.
 
-    **Key Highlights**
-    - Bureau-aligned feature engineering
-    - Derived delinquency metrics
-    - Recall-focused ML model
-    - Rule-based risk overrides
-    - Explainable, policy-driven decisions
-
-    **Author:** Sree Varshan
+    **Key Features**
+    - Bureau-aligned credit behaviour metrics
+    - Long-term delinquency feature engineering
+    - ML probability + rule-based interpretation
+    - Policy-aligned, explainable output
     """)
 
 # ==================================================
@@ -93,29 +100,17 @@ elif page == "🧮 Calculations":
     st.markdown("""
     ### Long-Term / Repeated Delinquency Count
 
-    **Formula**
     ```
     Long_Term_Delinquency =
     30+ DPD (24 Months)
     + max(0, 30+ DPD (12 Months) - 1)
     ```
 
-    **Explanation**
+    **Logic**
     - 24M captures historical behaviour
     - 12M captures recent stress
     - Prevents double counting
     - Penalizes repeated delinquency
-    """)
-
-    st.markdown("""
-    ### Credit Score Risk Bands
-
-    | Score Range | Risk Band |
-    |------------|-----------|
-    | ≤ 500 | Very High Risk |
-    | 501 – 607 | High Risk |
-    | 608 – 715 | Medium Risk |
-    | > 715 | Low Risk |
     """)
 
     st.markdown(
@@ -130,16 +125,6 @@ elif page == "⚙️ Business Rule Engine":
     st.markdown("## Business Rule Engine (BRE)")
 
     st.markdown("""
-    ### Credit Score Rules
-    ```text
-    IF Credit Score ≤ 500 → Very High Risk
-    IF Credit Score 501–607 → High Risk
-    IF Credit Score 608–715 → Medium Risk
-    IF Credit Score > 715 → Low Risk
-    ```
-    """)
-
-    st.markdown("""
     ### Delinquency Rules
     ```text
     IF Long-Term Delinquency ≥ 5 → Reject
@@ -150,29 +135,23 @@ elif page == "⚙️ Business Rule Engine":
     """)
 
     st.markdown("""
-    ### Default Override Rules
+    ### Credit Score Rules
     ```text
-    IF Open Defaults > 0 → Auto Reject
-    IF Total Defaults ≥ 2 → Very High Risk
+    ≤ 500 → Very High Risk
+    501–607 → High Risk
+    608–715 → Medium Risk
+    > 715 → Low Risk
     ```
     """)
 
-    st.markdown("""
-    **Why BRE is Used**
-    - Improves recall
-    - Controls extreme predictions
-    - Aligns with credit policy
-    - Ensures explainability
-    """)
-
 # ==================================================
-# INPUT & PREDICTION (ALL PAGES)
+# INPUT SECTION
 # ==================================================
 st.markdown("<a id='input_section'></a>", unsafe_allow_html=True)
 
 st.info(
-    "All inputs follow credit bureau risk-score logic. "
-    "Derived features are calculated automatically."
+    "All inputs follow credit bureau logic. "
+    "Derived metrics are calculated automatically."
 )
 
 st.markdown("### Credit Behaviour Metrics")
@@ -204,27 +183,6 @@ st.metric(
     Long_Term_Payment_Delinquency_Count
 )
 
-st.markdown("### Applicant Profile")
-
-col4, col5, col6 = st.columns(3)
-
-with col4:
-    RESIDENTIAL = st.selectbox("Residential Status", ["Owned", "Rented", "Living_With_Family", "Missing"])
-    CD_OCCUPATION = st.selectbox("Occupation Type", ["employed", "self_employed", "student", "retired", "unemployed", "Missing"])
-
-with col5:
-    EMPLOYED_STATUS = st.selectbox("Employment Status", ["employed", "self_employed", "student", "retired", "unemployed", "benefits", "Missing"])
-    APPLICANT_AGE = st.selectbox("Applicant Age Band", ["18-24", "25-29", "30-34", "35-44", "45-54", "54+"])
-
-with col6:
-    DOC_TYPE = st.selectbox("Document Type", ["AU Passport", "AU Driver Licence", "Australian Passport", "Intl Passport and Visa", "HAAU 18+ Card", "Missing"])
-    BUREAU_DEFAULT = st.selectbox("Bureau Default Category", ["Missing", "1-1000", "1000+"])
-
-st.markdown("### Internal Risk Segmentation")
-
-SCORECARD = st.selectbox("Internal Scorecard", ["TAR1A", "SFJR1A", "HSHSOL", "CTSDP", "INSLV"])
-BUREAU_ENQUIRIES_12_MONTHS = st.selectbox("Bureau Enquiries (12M)", ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"])
-
 # --------------------------------------------------
 # PREDICTION
 # --------------------------------------------------
@@ -241,30 +199,42 @@ if st.button("Predict Credit Risk", use_container_width=True):
         "Recent_Payment_Irregularity_Flag": Recent_Payment_Irregularity_Flag,
         "CREDIT_CARD_CR22": CREDIT_CARD_CR22,
         "DEFAULT_CNT_CR22": DEFAULT_CNT_CR22,
-        "DEFAULT_OPEN_CNT_CR22": DEFAULT_OPEN_CNT_CR22,
-        "RESIDENTIAL": RESIDENTIAL,
-        "CD_OCCUPATION": CD_OCCUPATION,
-        "DOC_TYPE": DOC_TYPE,
-        "EMPLOYED_STATUS": EMPLOYED_STATUS,
-        "APPLICANT_AGE": APPLICANT_AGE,
-        "BUREAU_DEFAULT": BUREAU_DEFAULT,
-        "SCORECARD": SCORECARD,
-        "BUREAU_ENQUIRIES_12_MONTHS": BUREAU_ENQUIRIES_12_MONTHS
+        "DEFAULT_OPEN_CNT_CR22": DEFAULT_OPEN_CNT_CR22
     }
 
     prob_bad, decision = predict_risk(user_input)
     band = cr22_risk_band(SCORE_CR22)
 
+    delinq_band, delinq_reason = delinquency_interpretation(
+        Long_Term_Payment_Delinquency_Count
+    )
+
     st.markdown("## Prediction Outcome")
 
     if decision.lower() == "bad":
-        st.error(f"Final Decision: {decision}")
+        st.error(f"ML Decision: {decision}")
     else:
-        st.success(f"Final Decision: {decision}")
+        st.success(f"ML Decision: {decision}")
 
     st.markdown(
         f"""
         **Credit Score Risk Band:** {band}  
-        **Probability of Default:** {prob_bad:.2%}
+        **Probability of Default (ML):** {prob_bad:.2%}
         """
     )
+
+    st.markdown("### Rule-Based Interpretation")
+
+    st.markdown(
+        f"""
+        **Delinquency Risk Level:** {delinq_band}  
+        **Interpretation:** {delinq_reason}
+        """
+    )
+
+    if delinq_band == "Reject":
+        st.error("Final Rule Decision: ❌ Reject (Delinquency Rule Triggered)")
+    elif delinq_band == "High Risk":
+        st.warning("Final Rule Decision: ⚠️ High Risk Applicant")
+    else:
+        st.success("Final Rule Decision: ✅ Acceptable Risk")
