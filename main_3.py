@@ -29,7 +29,7 @@ st.info(
 )
 
 # --------------------------------------------------
-# BUSINESS LOGIC (ML PIPELINE CONSISTENT)
+# BUSINESS LOGIC (MATCHES ML PIPELINE)
 # --------------------------------------------------
 def long_term_delinquency_count(dpd_12m: int, dpd_24m: int) -> int:
     """
@@ -38,7 +38,7 @@ def long_term_delinquency_count(dpd_12m: int, dpd_24m: int) -> int:
     return dpd_24m + max(0, dpd_12m - 1)
 
 # --------------------------------------------------
-# INPUTS
+# CREDIT BEHAVIOUR METRICS
 # --------------------------------------------------
 st.markdown("### Credit Behaviour Metrics")
 
@@ -84,17 +84,18 @@ with col3:
     )
 
 # --------------------------------------------------
-# AUTO-DERIVED FEATURE (READ-ONLY)
+# AUTO-DERIVED FEATURE (CLEAR DISPLAY)
 # --------------------------------------------------
 Long_Term_Payment_Delinquency_Count = long_term_delinquency_count(
     Late_Payment_30DPD_Last_12M,
     Late_Payment_30DPD_Last_24M
 )
 
-st.text_input(
-    "Long-Term / Repeated Delinquency Count (Auto-calculated)",
-    value=Long_Term_Payment_Delinquency_Count,
-    disabled=True
+st.markdown("#### Derived Credit Metric")
+
+st.metric(
+    label="Long-Term / Repeated Delinquency Count (Auto-calculated)",
+    value=Long_Term_Payment_Delinquency_Count
 )
 
 # --------------------------------------------------
@@ -144,7 +145,7 @@ with col6:
     )
 
 # --------------------------------------------------
-# INTERNAL SEGMENTATION
+# INTERNAL RISK SEGMENTATION
 # --------------------------------------------------
 st.markdown("### Internal Risk Segmentation")
 
@@ -218,4 +219,3 @@ if predict_btn:
         Probability of Default: **{prob_bad:.2%}**
         """
     )
-
