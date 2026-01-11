@@ -56,7 +56,7 @@ def cr22_risk_band(score):
         return "Low Risk"
 
 # ==================================================
-# 🏠 HOME PAGE
+# 🏠 HOME
 # ==================================================
 if page == "🏠 Home":
     st.markdown(
@@ -67,11 +67,6 @@ if page == "🏠 Home":
         </p>
         """,
         unsafe_allow_html=True
-    )
-
-    st.image(
-        "/mnt/data/1d370404-80f0-4f69-9d3a-6428084c043c.png",
-        use_column_width=True
     )
 
     st.markdown("""
@@ -90,13 +85,14 @@ if page == "🏠 Home":
     """)
 
 # ==================================================
-# 🧮 CALCULATIONS PAGE
+# 🧮 CALCULATIONS
 # ==================================================
 elif page == "🧮 Calculations":
     st.markdown("## Calculation Logic")
 
     st.markdown("""
     ### Long-Term / Repeated Delinquency Count
+
     **Formula**
     ```
     Long_Term_Delinquency =
@@ -104,7 +100,7 @@ elif page == "🧮 Calculations":
     + max(0, 30+ DPD (12 Months) - 1)
     ```
 
-    **Why this works**
+    **Explanation**
     - 24M captures historical behaviour
     - 12M captures recent stress
     - Prevents double counting
@@ -113,6 +109,7 @@ elif page == "🧮 Calculations":
 
     st.markdown("""
     ### Credit Score Risk Bands
+
     | Score Range | Risk Band |
     |------------|-----------|
     | ≤ 500 | Very High Risk |
@@ -127,7 +124,7 @@ elif page == "🧮 Calculations":
     )
 
 # ==================================================
-# ⚙️ BUSINESS RULE ENGINE PAGE
+# ⚙️ BUSINESS RULE ENGINE
 # ==================================================
 elif page == "⚙️ Business Rule Engine":
     st.markdown("## Business Rule Engine (BRE)")
@@ -161,17 +158,22 @@ elif page == "⚙️ Business Rule Engine":
     """)
 
     st.markdown("""
-    **Why BRE?**
+    **Why BRE is Used**
     - Improves recall
     - Controls extreme predictions
-    - Ensures policy compliance
-    - Provides explainability
+    - Aligns with credit policy
+    - Ensures explainability
     """)
 
 # ==================================================
-# MAIN INPUT & PREDICTION SECTION (ALL PAGES)
+# INPUT & PREDICTION (ALL PAGES)
 # ==================================================
 st.markdown("<a id='input_section'></a>", unsafe_allow_html=True)
+
+st.info(
+    "All inputs follow credit bureau risk-score logic. "
+    "Derived features are calculated automatically."
+)
 
 st.markdown("### Credit Behaviour Metrics")
 
