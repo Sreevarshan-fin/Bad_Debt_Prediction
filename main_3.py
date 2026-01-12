@@ -36,7 +36,7 @@ st.markdown(
     """
     <h1 style="text-align:center;">Bad Debt Risk Prediction</h1>
     <p style="text-align:center; color:grey;">
-    Credit Bureau–Driven Risk Assessment Dashboard
+    Machine Learning Project
     </p>
     """,
     unsafe_allow_html=True
@@ -223,7 +223,7 @@ if predict_btn:
     st.markdown(
         f"""
         Credit Score Risk Band: **{band}**  
-        Probability of Default: **{prob_bad:.2%}**
+    
         """
     )
 
