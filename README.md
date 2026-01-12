@@ -33,7 +33,7 @@ Instead of using the model as a hard approve/reject system, predictions were com
 ---
 ##	**Project Architecture**
 
-<img width="1000" height="673" alt="image" src="https://github.com/user-attachments/assets/bc0048b9-121d-4514-b7dd-e959354fabf2" />
+<img width="1000" height="800" alt="image" src="https://github.com/user-attachments/assets/bc0048b9-121d-4514-b7dd-e959354fabf2" />
 
 
 
