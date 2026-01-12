@@ -82,19 +82,13 @@ if page == "🏠 Home":
 
     st.markdown("""
     ### About This Project
-    This application simulates a **real-world credit risk decision system**
-    used by banks and financial institutions to identify **bad debt risk**.
-
-    **Key Components**
-    - Credit bureau behaviour metrics
-    - Long-term delinquency feature engineering
-    - Machine learning default probability
-    - Business Rule Engine (BRE) overrides
+    This project simulates a real-world credit risk decision system that predicts bad debt risk using machine learning**
+    and applies a business rule engine to ensure policy-compliant, explainable decisions—similar to systems used in banks and financial institutions.**
 
     ### About Me
     **Sree Varshan**  
     Aspiring Data Scientist & Credit Risk Analyst  
-    Specialized in **ML-driven credit risk systems**
+    Focused on building ML-driven credit risk and decisioning systems**
     """)
 
 # ==================================================
