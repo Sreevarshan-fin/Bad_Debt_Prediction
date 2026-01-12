@@ -190,7 +190,7 @@ if predict_btn:
         st.metric("Delinquency Risk", delinquency_risk)
 
     with d3:
-        st.metric("ML Decision", decision.upper())
+        st.metric("Decision", decision.upper())
 
     if decision.lower() == "bad" or delinquency_risk.startswith("Very High"):
         st.error("❌ Application Classified as High Risk")
@@ -203,7 +203,5 @@ if predict_btn:
     st.write(f"""
     - Credit score places the applicant in **{score_band}**
     - Long-term delinquency count = **{LTD}**, indicating **{delinquency_risk}**
-    - Final decision is derived using **Machine Learning probability**
-      combined with **rule-based delinquency controls**
     """)
 
