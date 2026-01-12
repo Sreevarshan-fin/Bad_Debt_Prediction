@@ -7,7 +7,6 @@
 
 [![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployed-orange?logo=amazon-aws&logoColor=white)](http://13.53.159.161:8501)
 
-> Independently deployed on AWS EC2 to demonstrate cloud infrastructure, security groups, and server-side deployment.
 
 
 ## The Problem
