@@ -239,6 +239,7 @@ if predict_btn:
     st.markdown(
         f"""
         Credit Score Risk Band: **{band}**
+        
         Delinquency Risk Level: **{delinquency_risk}**
 
     
