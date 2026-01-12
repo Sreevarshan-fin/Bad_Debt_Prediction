@@ -2,15 +2,17 @@
 
 # Bad Debt Prediction System 
 
-**[![Open in Streamlit](https://img.shields.io/badge/Launch%20App-Streamlit-%23FF4B4B?logo=streamlit&logoColor=white&style=for-the-badge&labelColor=FF4B4B)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app/)**
-- **AWS EC2 Deployment:** http://13.53.159.161:8501
+## 🔗 Live Application
 
- ### 🔗 Live Application
-
+### ▶️ Streamlit Cloud (Recommended)
 [![Open in Streamlit](https://img.shields.io/badge/Launch%20App-Streamlit-%23FF4B4B?logo=streamlit&logoColor=white&style=for-the-badge)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app/)
 
-- **Streamlit Cloud (Recommended):** HTTPS, recruiter-friendly live demo  
-- **AWS EC2 Deployment:** http://13.53.159.161:8501 *(self-managed cloud deployment)*
+
+### ☁️ AWS EC2 Deployment (Self-Managed)
+[![AWS EC2](https://img.shields.io/badge/Deployed%20on-AWS%20EC2-orange?logo=amazon-aws&logoColor=white&style=for-the-badge)](http://13.53.159.161:8501)
+
+> Independently deployed on AWS EC2 to demonstrate cloud infrastructure, security groups, and server-side deployment
+
 
 
 ## The Problem
