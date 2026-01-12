@@ -31,7 +31,13 @@ Based on this understanding:
 Instead of using the model as a hard approve/reject system, predictions were combined with a **Business Rule Engine**, ensuring final decisions followed credit policy and remained explainable.
 
 ---
+##	**Project Architecture**
 
+<img width="597" height="717" alt="image" src="https://github.com/user-attachments/assets/288b5d3c-1865-4167-8563-e2ba2c0dc016" />
+
+
+
+---
 ## What the Project Aimed to Achieve
 
 * Understand what truly separates **good** and **bad** customers
