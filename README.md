@@ -2,6 +2,9 @@
 
 # Bad Debt Prediction System 
 
+**[![Open in Streamlit](https://img.shields.io/badge/Launch%20App-Streamlit-%23FF4B4B?logo=streamlit&logoColor=white&style=for-the-badge&labelColor=FF4B4B)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app/)**
+
+
 ## The Problem
 
 In credit-based businesses, customers are allowed to buy now and pay later. While this helps grow sales, it also creates risk. Some customers repay on time, but others delay payments or default completely. When these unpaid amounts cannot be recovered, they turn into **bad debt**, directly impacting revenue and cash flow.
