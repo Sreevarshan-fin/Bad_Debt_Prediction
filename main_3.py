@@ -5,21 +5,24 @@ from prediction_helper import predict_risk
 # Page Configuration
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Bad Debt Prediction Centre",
+    page_title="Bad Debt Prediction",
     page_icon="📊",
     layout="wide"
 )
 
 # --------------------------------------------------
-# STYLE
+# STYLE OVERRIDES (PROFESSIONAL METRIC SIZE)
 # --------------------------------------------------
 st.markdown(
     """
     <style>
-    .center-title { text-align: center; }
     div[data-testid="stMetricValue"] {
-        font-size: 26px !important;
+        font-size: 28px !important;
         font-weight: 600;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 14px;
+        color: #555555;
     }
     </style>
     """,
@@ -27,126 +30,200 @@ st.markdown(
 )
 
 # --------------------------------------------------
-# HEADER
+# Header
 # --------------------------------------------------
 st.markdown(
     """
-    <h1 class="center-title">📊 Bad Debt Prediction Centre</h1>
-    <h4 class="center-title" style="color: grey;">
-    Machine Learning Project
-    </h4>
+    <h1 style="text-align:center;">Bad Debt Risk Prediction</h1>
+    <p style="text-align:center; color:grey;">
+    Credit Bureau–Driven Risk Assessment Dashboard
+    </p>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown("---")
+st.info(
+    "All inputs follow credit bureau risk-score logic. "
+    "Derived features are calculated automatically to match the ML pipeline."
+)
 
 # --------------------------------------------------
-# ABOUT PROJECT
+# BUSINESS LOGIC (MATCHES ML PIPELINE)
 # --------------------------------------------------
-st.markdown("""
-### 🔍 About This Project
-This project simulates a **real-world credit risk decision system**
-used by financial institutions to identify **bad debt risk** using
-credit bureau behaviour and repayment history.
-
-The system applies **machine learning with credit policy logic**
-to produce **clear, explainable credit decisions**.
-
-**Developed by:**  
-**Sree Varshan**
-""")
-
-st.markdown("---")
-
-# --------------------------------------------------
-# BUSINESS LOGIC
-# --------------------------------------------------
-def long_term_delinquency_count(dpd_12m, dpd_24m):
+def long_term_delinquency_count(dpd_12m: int, dpd_24m: int) -> int:
     return dpd_24m + max(0, dpd_12m - 1)
 
+# --------------------------------------------------
+# CREDIT BEHAVIOUR METRICS
+# --------------------------------------------------
+st.markdown("### Credit Behaviour Metrics")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    SCORE_CR22 = st.number_input(
+        "Credit Score (0 – 1200)", -300, 1200, 650
+    )
+    DEROGATORIES = st.number_input(
+        "Derogatory Records", 0, value=0
+    )
+    Late_Payment_30DPD_Last_12M = st.number_input(
+        "Late Payments (30+ DPD) – Last 12 Months", 0, value=0
+    )
+
+with col2:
+    Credit_Card_Payment_Failure_Count = st.number_input(
+        "Credit Card Payment Failures", 0, value=0
+    )
+    Recent_Payment_Irregularity_Flag = st.number_input(
+        "Recent Payment Irregularity (Months)", 0, 25, 0
+    )
+    Late_Payment_30DPD_Last_24M = st.number_input(
+        "Late Payments (30+ DPD) – Last 24 Months", 0, value=0
+    )
+
+with col3:
+    CREDIT_CARD_CR22 = st.number_input(
+        "Active Credit Cards", 0, value=1
+    )
+    DEFAULT_CNT_CR22 = st.number_input(
+        "Total Historical Defaults", 0, value=0
+    )
+    DEFAULT_OPEN_CNT_CR22 = st.number_input(
+        "Open Defaults", 0, value=0
+    )
+
+# --------------------------------------------------
+# AUTO-DERIVED FEATURE (CLEAR + READABLE)
+# --------------------------------------------------
+Long_Term_Payment_Delinquency_Count = long_term_delinquency_count(
+    Late_Payment_30DPD_Last_12M,
+    Late_Payment_30DPD_Last_24M
+)
+
+st.markdown("#### Derived Credit Metric")
+
+st.metric(
+    label="Long-Term / Repeated Delinquency Count (Auto-calculated)",
+    value=Long_Term_Payment_Delinquency_Count
+)
+
+# --------------------------------------------------
+# APPLICANT PROFILE
+# --------------------------------------------------
+st.markdown("### Applicant Profile")
+
+col4, col5, col6 = st.columns(3)
+
+with col4:
+    RESIDENTIAL = st.selectbox(
+        "Residential Status",
+        ["Owned", "Rented", "Living_With_Family", "Missing"]
+    )
+    CD_OCCUPATION = st.selectbox(
+        "Occupation Type",
+        ["employed", "self_employed", "student", "retired", "unemployed", "Missing"]
+    )
+
+with col5:
+    EMPLOYED_STATUS = st.selectbox(
+        "Employment Status",
+        ["employed", "self_employed", "student", "retired",
+         "unemployed", "benefits", "Missing"]
+    )
+    APPLICANT_AGE = st.selectbox(
+        "Applicant Age Band",
+        ["18-24", "25 - 29", "30-34", "35-44", "45-54", "54+"]
+    )
+
+with col6:
+    DOC_TYPE = st.selectbox(
+        "Document Type",
+        [
+            "AU Passport", "AU Driver Licence", "Australian Passport",
+            "Intl Passport and Visa", "HAAU 18+ Card",
+            "Fire Arms Licence", "Defence Force ID(picture card)",
+            "AU Birth Certificate", "Missing"
+        ]
+    )
+    BUREAU_DEFAULT = st.selectbox(
+        "Bureau Default Category",
+        ["Missing", "1-1000", "1000+"]
+    )
+
+# --------------------------------------------------
+# INTERNAL RISK SEGMENTATION
+# --------------------------------------------------
+st.markdown("### Internal Risk Segmentation")
+
+SCORECARD = st.selectbox(
+    "Internal Scorecard",
+    ["TAR1A", "SFJR1A", "HSHSOL", "CTSDP", "INSLV"]
+)
+
+BUREAU_ENQUIRIES_12_MONTHS = st.selectbox(
+    "Bureau Enquiries (Last 12 Months)",
+    ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"]
+)
+
+# --------------------------------------------------
+# RISK BAND LOGIC
+# --------------------------------------------------
 def cr22_risk_band(score):
     if score <= 500:
-        return "Very High"
+        return "Very High Risk"
     elif score <= 607:
-        return "High"
+        return "High Risk"
     elif score <= 715:
-        return "Medium"
+        return "Medium Risk"
     else:
-        return "Low"
-
-def delinquency_risk_score(ltd):
-    if ltd >= 5:
-        return "High"
-    elif ltd >= 3:
-        return "Medium"
-    elif ltd >= 1:
-        return "Low"
-    else:
-        return "Clean"
-
-# --------------------------------------------------
-# INPUT SECTION (CREDIT BUREAU ONLY)
-# --------------------------------------------------
-st.markdown("## 🧮 Credit Bureau Inputs")
-
-c1, c2, c3 = st.columns(3)
-
-with c1:
-    SCORE_CR22 = st.number_input("Credit Score", -300, 1200, 650)
-    DEROGATORIES = st.number_input("Derogatory Records", 0, value=0)
-    Late_12M = st.number_input("30+ DPD (Last 12 Months)", 0, value=0)
-
-with c2:
-    Late_24M = st.number_input("30+ DPD (Last 24 Months)", 0, value=0)
-    CC_Failures = st.number_input("Credit Card Payment Failures", 0, value=0)
-    Recent_Irregularity = st.number_input("Recent Payment Irregularity (Months)", 0, 24, 0)
-
-with c3:
-    Active_CC = st.number_input("Active Credit Cards", 0, value=1)
-    Total_Defaults = st.number_input("Total Historical Defaults", 0, value=0)
-    Open_Defaults = st.number_input("Open Defaults", 0, value=0)
-
-# --------------------------------------------------
-# DERIVED DELINQUENCY
-# --------------------------------------------------
-LTD = long_term_delinquency_count(Late_12M, Late_24M)
-delinq_score = delinquency_risk_score(LTD)
-
-st.metric("Delinquency-Based Risk Score", delinq_score)
-
-st.markdown("---")
+        return "Low Risk"
 
 # --------------------------------------------------
 # PREDICTION
 # --------------------------------------------------
-if st.button("🔍 Evaluate Credit Risk", use_container_width=True):
+st.markdown("---")
+center_col = st.columns([1, 2, 1])[1]
 
+with center_col:
+    predict_btn = st.button("Predict Credit Risk", use_container_width=True)
+
+if predict_btn:
     user_input = {
         "SCORE_CR22": SCORE_CR22,
         "DEROGATORIES": DEROGATORIES,
-        "Late_Payment_30DPD_Last_12M": Late_12M,
-        "Late_Payment_30DPD_Last_24M": Late_24M,
-        "Long_Term_Payment_Delinquency_Count": LTD,
-        "Credit_Card_Payment_Failure_Count": CC_Failures,
-        "Recent_Payment_Irregularity_Flag": Recent_Irregularity,
-        "CREDIT_CARD_CR22": Active_CC,
-        "DEFAULT_CNT_CR22": Total_Defaults,
-        "DEFAULT_OPEN_CNT_CR22": Open_Defaults
+        "Late_Payment_30DPD_Last_12M": Late_Payment_30DPD_Last_12M,
+        "Late_Payment_30DPD_Last_24M": Late_Payment_30DPD_Last_24M,
+        "Long_Term_Payment_Delinquency_Count": Long_Term_Payment_Delinquency_Count,
+        "Credit_Card_Payment_Failure_Count": Credit_Card_Payment_Failure_Count,
+        "Recent_Payment_Irregularity_Flag": Recent_Payment_Irregularity_Flag,
+        "CREDIT_CARD_CR22": CREDIT_CARD_CR22,
+        "DEFAULT_CNT_CR22": DEFAULT_CNT_CR22,
+        "DEFAULT_OPEN_CNT_CR22": DEFAULT_OPEN_CNT_CR22,
+        "RESIDENTIAL": RESIDENTIAL,
+        "CD_OCCUPATION": CD_OCCUPATION,
+        "DOC_TYPE": DOC_TYPE,
+        "EMPLOYED_STATUS": EMPLOYED_STATUS,
+        "APPLICANT_AGE": APPLICANT_AGE,
+        "BUREAU_DEFAULT": BUREAU_DEFAULT,
+        "SCORECARD": SCORECARD,
+        "BUREAU_ENQUIRIES_12_MONTHS": BUREAU_ENQUIRIES_12_MONTHS
     }
 
-    _, decision = predict_risk(user_input)
+    prob_bad, decision = predict_risk(user_input)
     band = cr22_risk_band(SCORE_CR22)
 
-    # Convert decision to Good / Bad
-    credit_outcome = "Bad" if decision in ["Reject", "High Risk"] else "Good"
+    st.markdown("## Prediction Outcome")
 
-    st.markdown("## 📈 Credit Decision Summary")
+    if decision.lower() == "bad":
+        st.error(f"Final Decision: {decision}")
+    else:
+        st.success(f"Final Decision: {decision}")
 
-    r1, r2, r3 = st.columns(3)
-    r1.metric("Credit Outcome", credit_outcome)
-    r2.metric("Credit Risk Band", band)
-    r3.metric("Delinquency Risk", delinq_score)
-
-
+    st.markdown(
+        f"""
+        Credit Score Risk Band: **{band}**  
+        Probability of Default: **{prob_bad:.2%}**
+        """
+    )
 
