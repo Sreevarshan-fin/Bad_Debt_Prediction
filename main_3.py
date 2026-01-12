@@ -1,3 +1,4 @@
+
 import streamlit as st
 from prediction_helper import predict_risk
 
@@ -50,11 +51,11 @@ with c1:
     st.markdown("""
     ### 🔍 About This Project
     This project simulates a **real-world credit risk decision system**
-    used by financial institutions to predict **bad debt risk**.
+    used by financial institutions to identify **bad debt risk**.
 
-    It combines **machine learning–based default probability**
-    with **internal business rules** to deliver **accurate,
-    policy-compliant, and explainable credit decisions**.
+    The system combines **machine learning intelligence**
+    with **internal business rules** to deliver
+    **policy-compliant and explainable credit decisions**.
     """)
 
 with c2:
@@ -187,14 +188,15 @@ if st.button("🔍 Predict Credit Risk", use_container_width=True):
         "BUREAU_ENQUIRIES_12_MONTHS": BUREAU_ENQUIRIES_12M
     }
 
-    prob_bad, decision = predict_risk(user_input)
+    _, decision = predict_risk(user_input)
     band = cr22_risk_band(SCORE_CR22)
 
-    st.markdown("## 📈 Prediction Result")
+    st.markdown("## 📈 Final Credit Decision")
 
-    r2, r3 = st.columns(3)
-    r2.metric("Credit Risk Band", band)
-    r3.metric("Final Decision", decision)
+    r1, r2 = st.columns(2)
+    r1.metric("Credit Risk Band", band)
+    r2.metric("Final Decision", decision)
 
-    st.info("Business rules are applied internally to ensure policy-aligned decisions.")
+    st.info("Risk probability is used internally and not exposed to end users.")
+
 
