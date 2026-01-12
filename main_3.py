@@ -179,6 +179,18 @@ def cr22_risk_band(score):
     else:
         return "Low Risk"
 
+
+def delinquency_risk_band(long_term_delinquency):
+    if long_term_delinquency >= 5:
+        return "Very High Risk (Reject)"
+    elif long_term_delinquency >= 3:
+        return "High Risk"
+    elif long_term_delinquency >= 1:
+        return "Medium Risk"
+    else:
+        return "Low Risk"
+
+
 # --------------------------------------------------
 # PREDICTION
 # --------------------------------------------------
@@ -212,6 +224,10 @@ if predict_btn:
 
     prob_bad, decision = predict_risk(user_input)
     band = cr22_risk_band(SCORE_CR22)
+    delinquency_risk = delinquency_risk_band(
+    Long_Term_Payment_Delinquency_Count
+)
+
 
     st.markdown("## Prediction Outcome")
 
@@ -222,7 +238,9 @@ if predict_btn:
 
     st.markdown(
         f"""
-        Credit Score Risk Band: **{band}**  
+        Credit Score Risk Band: **{band}**
+        Delinquency Risk Level: **{delinquency_risk}**
+
     
         """
     )
