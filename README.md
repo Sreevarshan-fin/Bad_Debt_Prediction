@@ -2,16 +2,12 @@
 
 # Bad Debt Prediction System 
 
-##### 🔗 Live Application
+[![Launch App](https://img.shields.io/badge/Launch%20App-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app)
+&nbsp;&nbsp;
 
+[![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployed-orange?logo=amazon-aws&logoColor=white)](http://13.53.159.161:8501)
 
-[![Open in Streamlit](https://img.shields.io/badge/Launch%20App-Streamlit-%23FF4B4B?logo=streamlit&logoColor=white&style=for-the-badge)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app/)
-
-
-[![AWS EC2](https://img.shields.io/badge/Deployed%20on-AWS%20EC2-orange?logo=amazon-aws&logoColor=white&style=for-the-badge)](http://13.53.159.161:8501)
-
-> Independently deployed on AWS EC2 to demonstrate cloud infrastructure, security groups, and server-side deployment
-
+> Independently deployed on AWS EC2 to demonstrate cloud infrastructure, security groups, and server-side deployment.
 
 
 ## The Problem
