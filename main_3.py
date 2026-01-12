@@ -16,9 +16,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    .center-title {
-        text-align: center;
-    }
+    .center-title { text-align: center; }
     div[data-testid="stMetricValue"] {
         font-size: 28px !important;
         font-weight: 600;
@@ -52,19 +50,17 @@ with c1:
     st.markdown("""
     ### 🔍 About This Project
     This project simulates a **real-world credit risk decision system**
-    used by banks and financial institutions to predict **bad debt risk**.
+    used by financial institutions to predict **bad debt risk**.
 
     It combines **machine learning–based default probability**
-    with **internal risk logic** to deliver **accurate and explainable
-    credit decisions**.
+    with **internal business rules** to deliver **accurate,
+    policy-compliant, and explainable credit decisions**.
     """)
 
 with c2:
     st.markdown("""
-    ### 👤 About Me
-    **Sree Varshan**  
-    Aspiring **Data Scientist & Credit Risk Analyst**  
-    Focused on **ML-driven credit risk and decisioning systems**
+    ### 👤 Name
+    **Sree Varshan**
     """)
 
 st.markdown("---")
@@ -90,26 +86,78 @@ def cr22_risk_band(score):
 # --------------------------------------------------
 st.markdown("## 🧮 Credit Risk Assessment")
 
-col1, col2, col3 = st.columns(3)
+# ---------------- CREDIT BEHAVIOUR ----------------
+st.markdown("### Credit Behaviour Metrics")
+c1, c2, c3 = st.columns(3)
 
-with col1:
-    SCORE_CR22 = st.number_input("Credit Score", -300, 1200, 650)
-    Late_12M = st.number_input("Late Payments (30+ DPD) – 12M", 0, value=0)
+with c1:
+    SCORE_CR22 = st.number_input("Credit Score (0–1200)", -300, 1200, 650)
     DEROGATORIES = st.number_input("Derogatory Records", 0, value=0)
+    Late_12M = st.number_input("Late Payments (30+ DPD) – Last 12 Months", 0, value=0)
 
-with col2:
-    Late_24M = st.number_input("Late Payments (30+ DPD) – 24M", 0, value=0)
+with c2:
     CC_Failures = st.number_input("Credit Card Payment Failures", 0, value=0)
     Recent_Irregularity = st.number_input("Recent Payment Irregularity (Months)", 0, 25, 0)
+    Late_24M = st.number_input("Late Payments (30+ DPD) – Last 24 Months", 0, value=0)
 
-with col3:
+with c3:
     Active_CC = st.number_input("Active Credit Cards", 0, value=1)
-    Total_Defaults = st.number_input("Total Defaults", 0, value=0)
+    Total_Defaults = st.number_input("Total Historical Defaults", 0, value=0)
     Open_Defaults = st.number_input("Open Defaults", 0, value=0)
 
-# Derived Feature
+# ---------------- DERIVED FEATURE ----------------
 LTD = long_term_delinquency_count(Late_12M, Late_24M)
-st.metric("Long-Term Delinquency Count", LTD)
+st.metric("Long-Term / Repeated Delinquency Count", LTD)
+
+# ---------------- APPLICANT PROFILE ----------------
+st.markdown("### Applicant Profile")
+a1, a2, a3 = st.columns(3)
+
+with a1:
+    RESIDENTIAL = st.selectbox(
+        "Residential Status",
+        ["Owned", "Rented", "Living_With_Family", "Missing"]
+    )
+    CD_OCCUPATION = st.selectbox(
+        "Occupation Type",
+        ["employed", "self_employed", "student", "retired", "unemployed", "Missing"]
+    )
+
+with a2:
+    EMPLOYED_STATUS = st.selectbox(
+        "Employment Status",
+        ["employed", "self_employed", "student", "retired", "unemployed", "benefits", "Missing"]
+    )
+    APPLICANT_AGE = st.selectbox(
+        "Applicant Age Band",
+        ["18-24", "25-29", "30-34", "35-44", "45-54", "54+"]
+    )
+
+with a3:
+    DOC_TYPE = st.selectbox(
+        "Document Type",
+        [
+            "AU Passport", "AU Driver Licence", "Australian Passport",
+            "Intl Passport and Visa", "HAAU 18+ Card", "Missing"
+        ]
+    )
+    BUREAU_DEFAULT = st.selectbox(
+        "Bureau Default Category",
+        ["Missing", "1-1000", "1000+"]
+    )
+
+# ---------------- INTERNAL SEGMENTATION ----------------
+st.markdown("### Internal Risk Segmentation")
+
+SCORECARD = st.selectbox(
+    "Internal Scorecard",
+    ["TAR1A", "SFJR1A", "HSHSOL", "CTSDP", "INSLV"]
+)
+
+BUREAU_ENQUIRIES_12M = st.selectbox(
+    "Bureau Enquiries (Last 12 Months)",
+    ["1-2", "3", "4-5", "6-7", "8-11", "12+", "14+"]
+)
 
 st.markdown("---")
 
@@ -128,7 +176,15 @@ if st.button("🔍 Predict Credit Risk", use_container_width=True):
         "Recent_Payment_Irregularity_Flag": Recent_Irregularity,
         "CREDIT_CARD_CR22": Active_CC,
         "DEFAULT_CNT_CR22": Total_Defaults,
-        "DEFAULT_OPEN_CNT_CR22": Open_Defaults
+        "DEFAULT_OPEN_CNT_CR22": Open_Defaults,
+        "RESIDENTIAL": RESIDENTIAL,
+        "CD_OCCUPATION": CD_OCCUPATION,
+        "EMPLOYED_STATUS": EMPLOYED_STATUS,
+        "APPLICANT_AGE": APPLICANT_AGE,
+        "DOC_TYPE": DOC_TYPE,
+        "BUREAU_DEFAULT": BUREAU_DEFAULT,
+        "SCORECARD": SCORECARD,
+        "BUREAU_ENQUIRIES_12_MONTHS": BUREAU_ENQUIRIES_12M
     }
 
     prob_bad, decision = predict_risk(user_input)
@@ -136,10 +192,9 @@ if st.button("🔍 Predict Credit Risk", use_container_width=True):
 
     st.markdown("## 📈 Prediction Result")
 
-    r1, r2, r3 = st.columns(3)
-
-    r1.metric("Probability of Default", f"{prob_bad:.2%}")
+    r2, r3 = st.columns(3)
     r2.metric("Credit Risk Band", band)
     r3.metric("Final Decision", decision)
 
     st.info("Business rules are applied internally to ensure policy-aligned decisions.")
+
