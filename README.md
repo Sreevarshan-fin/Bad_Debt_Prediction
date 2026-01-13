@@ -8,6 +8,20 @@
 [![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployed-orange?logo=amazon-aws&logoColor=white)](http://13.53.159.161:8501)
 
 
+##  Tech Stack
+
+**Development & Version Control**
+- VS Code
+- Git & GitHub
+
+**Application & Deployment**
+- Streamlit (Web App)
+- AWS ECS (Containerized Hosting)
+
+**Programming & Libraries**
+- Python
+- Pandas, NumPy, Scikit-learn
+
 
 ## The Problem
 
