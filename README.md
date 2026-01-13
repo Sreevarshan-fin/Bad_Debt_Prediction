@@ -27,7 +27,7 @@ An end-to-end **Bad Debt Prediction** that identifies potential bad debt custome
 - Python
 - Pandas, NumPy, Scikit-learn
 
-
+------------------------
 
 ## The Problem
 
