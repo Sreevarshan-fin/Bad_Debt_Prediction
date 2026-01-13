@@ -1,13 +1,15 @@
 
 
-# Bad Debt Prediction System 
+#  Bad Debt Prediction System 
 
-[![Launch App](https://img.shields.io/badge/Launch%20App-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app)
+[![Live Streamlit App](https://img.shields.io/badge/Live%20App-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app)
 &nbsp;&nbsp;
 
 [![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployed-orange?logo=amazon-aws&logoColor=white)](http://13.53.159.161:8501)
 
---------------
+An end-to-end **Bad Debt Prediction** that identifies potential bad debt customers and supports data-driven lending decisions.
+
+---
 
 ##  Tech Stack
 
@@ -16,12 +18,13 @@
 - Git & GitHub
 
 **Application & Deployment**
-- Streamlit (Web App)
-- AWS ECS (Containerized Hosting)
+- Streamlit (Web Application)
+- AWS EC2 (Cloud Hosting)
 
 **Programming & Libraries**
 - Python
 - Pandas, NumPy, Scikit-learn
+
 
 
 ## The Problem
