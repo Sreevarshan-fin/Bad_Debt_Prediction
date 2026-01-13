@@ -2,10 +2,12 @@
 
 #  Bad Debt Prediction System 
 
-[![Live Streamlit App](https://img.shields.io/badge/Live%20App-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app)
-&nbsp;&nbsp;
+ ---
 
-[![AWS EC2](https://img.shields.io/badge/AWS%20EC2-Deployed-orange?logo=amazon-aws&logoColor=white)](http://13.53.159.161:8501)
+
+[![🚀 Live Streamlit App](https://img.shields.io/badge/Live%20Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)](https://baddebtprediction-5hh99e6ezkuwsp5wlrbchd.streamlit.app)
+&nbsp;&nbsp;
+[![AWS ECS](https://img.shields.io/badge/AWS%20ECS-Deployed-orange?logo=amazon-aws&logoColor=white)](#)
 
 An end-to-end **Bad Debt Prediction** that identifies potential bad debt customers and supports data-driven lending decisions.
 
