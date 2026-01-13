@@ -1,6 +1,6 @@
 
 
-#  Bad Debt Prediction System 
+#  Bad Debt Prediction
 
  ---
 
