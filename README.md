@@ -1,5 +1,7 @@
 <h1 align="center">Bad Debt Prediction</h1>
 
+![title](assets/title.png)
+
 <p align="center">
   <b>End-to-end machine learning system for predicting credit risk in BNPL environments
 Designed to identify high-risk borrowers and reduce bad debt exposure
