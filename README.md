@@ -1,21 +1,27 @@
-![title](assets/title.png)
 <p align="center">
-  <b>End-to-end machine learning system for predicting credit risk in BNPL environments
-Designed to identify high-risk borrowers and reduce bad debt exposure
-Enables data-driven, risk-aware lending decisions at scale</b>
+  <img src="assets/title.png" alt="Bad Debt Prediction" width="100%">
 </p>
 
+<p align="center">
+  <b>
+    End-to-end machine learning system for predicting credit risk in BNPL environments.<br>
+    Designed to identify high-risk borrowers and reduce bad debt exposure.<br>
+    Enables data-driven, risk-aware lending decisions at scale.
+  </b>
+</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=flat-square&logo=scikitlearn&logoColor=white"/>
-  <img src="https://img.shields.io/badge/MLflow-0194E2?style=flat-square&logo=mlflow&logoColor=white"/>
-  <img src="https://img.shields.io/badge/AWS%20SageMaker-FF9900?style=flat-square&logo=amazonaws&logoColor=white"/>
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white"/>
-  <img src="https://img.shields.io/badge/WoE%20%2F%20IV-6A0DAD?style=flat-square"/>
-  <img src="https://img.shields.io/badge/PSI%20%2F%20CSI-D32F2F?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white">
+  <img src="https://img.shields.io/badge/Scikit--Learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white">
+  <img src="https://img.shields.io/badge/MLflow-0194E2?style=flat-square&logo=mlflow&logoColor=white">
+  <img src="https://img.shields.io/badge/AWS%20SageMaker-FF9900?style=flat-square&logo=amazonaws&logoColor=white">
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white">
+  <img src="https://img.shields.io/badge/WoE%20%2F%20IV-6A0DAD?style=flat-square">
+  <img src="https://img.shields.io/badge/PSI%20%2F%20CSI-D32F2F?style=flat-square">
 </p>
+
+<hr>
 
 
 ---
