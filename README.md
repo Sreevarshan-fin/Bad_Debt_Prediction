@@ -2,13 +2,6 @@
   <img src="assets/title.png" alt="Bad Debt Prediction" width="100%">
 </p>
 
-<p align="center">
-  <b>
-    End-to-end machine learning system for predicting credit risk in BNPL environments.<br>
-    Designed to identify high-risk borrowers and reduce bad debt exposure.<br>
-    Enables data-driven, risk-aware lending decisions at scale.
-  </b>
-</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white">
