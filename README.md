@@ -1,5 +1,3 @@
-<h1 align="center">Bad Debt Prediction</h1>
-
 ![title](assets/title.png)
 
 <p align="center">
