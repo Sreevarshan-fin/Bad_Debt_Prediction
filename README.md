@@ -14,8 +14,6 @@
   <img src="https://img.shields.io/badge/PSI%20%2F%20CSI-D32F2F?style=flat-square">
 </p>
 
-<hr>
-
 
 ---
 
