@@ -1,3 +1,5 @@
+------------
+
 <p align="center">
   <img src="assets/title.png" alt="Bad Debt Prediction" width="100%">
 </p>
